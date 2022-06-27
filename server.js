@@ -25,6 +25,26 @@ db.connect(function(err) {
   console.log("Connected to MySQL database!");
 });
 
+app.get('/question/:id', (request, result) => {
+  if(request.params.id != undefined) {
+    let sql = "SELECT * FROM questions WHERE id='" + request.params.id + "';";
+    db.query(sql, (err, res) => {
+      if(err) throw err;
+
+      result.send({
+        "question": res[0].question,
+        "yes": res[0].yes,
+        "no": res[0].no,
+        "type": res[0].type,
+        "text": res[0].text
+      })
+    })
+  }
+  else {
+    res.send({"question": -1});
+  }
+})
+
 app.get('/tecontent/:id', (req, res) => {
   db.query(`SELECT * FROM tecontent WHERE id = ${db.escape(req.params.id)}`, function(err, data, fields) {
     if (err) throw err;
@@ -49,5 +69,3 @@ app.put('/tecontent/:id', (req, res) => {
 app.listen(port, () => {
   console.log(`rgpd-api listening at http://localhost:${port}`)
 });
-
-
