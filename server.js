@@ -1,12 +1,14 @@
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
+const querystring = require("querystring");
+const { Curl } = require("node-libcurl");
 
 const mySQL = require('mysql');
 
 const router = express.Router();
 
-const db = mySQL.createConnection({host: 'localhost', user: 'dani', password: '495sac', database: 'rgpd-app'});
+const db = mySQL.createConnection({host: 'localhost', user: 'root', password: '', database: 'rgpd-app'});
 
 const app = express();
 const port = 3011
@@ -32,6 +34,7 @@ app.get('/question/:id', (request, result) => {
       if(err) throw err;
 
       result.send({
+        "id": res[0].id,
         "question": res[0].question,
         "yes": res[0].yes,
         "no": res[0].no,
@@ -43,27 +46,6 @@ app.get('/question/:id', (request, result) => {
   else {
     res.send({"question": -1});
   }
-})
-
-app.get('/tecontent/:id', (req, res) => {
-  db.query(`SELECT * FROM tecontent WHERE id = ${db.escape(req.params.id)}`, function(err, data, fields) {
-    if (err) throw err;
-    res.json(data);
-  });
-});
-
-app.put('/tecontent/:id', (req, res) => {
-  let values = [
-    req.params.id,
-    req.body.content
-  ];
-  db.query(`REPLACE INTO tecontent(id, content) VALUES (?)`, [values], function(err, data, fields) {
-    if (err) throw err;
-    res.json({
-      status: 200,
-      message: "Conteúdo atualizado com sucesso!"
-    })
-  })
 });
 
 app.listen(port, () => {
