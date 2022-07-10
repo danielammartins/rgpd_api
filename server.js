@@ -41,7 +41,8 @@ app.get('/question/:id', (request, result) => {
         "yes": res[0].yes,
         "no": res[0].no,
         "type": res[0].type,
-        "text": res[0].text
+        "text": res[0].text,
+        "tfValue": res[0].tfValue
       })
     })
   }
