@@ -1,8 +1,10 @@
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors');
 const querystring = require("querystring");
 const { Curl } = require("node-libcurl");
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 const mySQL = require('mysql');
 
@@ -46,8 +48,16 @@ app.get('/question/:id', (request, result) => {
   else {
     res.send({"question": -1});
   }
-});
+}); 
 
+/*
 app.listen(port, () => {
   console.log(`rgpd-api listening at http://localhost:${port}`)
-});
+});*/
+
+const sslServer = https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
+}, app);
+
+sslServer.listen(port, () => console.log(`Secure rgpd-api listening at https://localhost:${port}`));
